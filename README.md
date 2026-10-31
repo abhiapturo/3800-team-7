@@ -2,24 +2,26 @@
 
 A reproducible comparison of three clustering methods (K-means, Leiden, and SC3s) on the same single-cell RNA seq dataset. We measure how well each method recovers known cell types, how well separated its clusters are, how many clusters it finds, how long it takes, and how much its results change with key parameters and random seeds.
 
-
 ## Contents
-* Background
-* Methods compared
-* Dataset
-* Repository Structure
-* Setup
-* How to run
-* Shared file formats
-* Evaluation 
-* Team and responsibilities
-* Timeline
-* References
+
+- Background
+- Methods compared
+- Dataset
+- Repository Structure
+- Setup
+- How to run
+- Shared file formats
+- Evaluation
+- Team and responsibilities
+- Timeline
+- References
 
 ### Background
+
 scRNA-seq measures gene expression in individual cells. Clustering groups cells with similar expression profiles, and these groups are then interpreted as cell types. Different clustering methods make different assumptions, so they can produce different groupings, with different stability and computational cost.
 
 Aim
+
 1. Compare agreement between each method's clusters and the reference cell-type labels.
 2. Compare cluster separation, runtime and the number of clusters each method finds
 3. Examine how results change the key parameters (number of cluster K, Leiden resolution) and random seeds.
@@ -27,6 +29,7 @@ Aim
 ### Methods compared
 
 ### Dataset
+
 PBMC68k reduced, bundled with Scanpy:
 
 ```Python
@@ -35,35 +38,36 @@ adata = sc.datasets.pbmc68k_reduced()
 ```
 
 ### Repository Structure
+
 scrna-clustering-comparison/
 ├── README.md
-├── environment.yml          # Conda environment (all dependencies, pinned)
-├── config.yaml              # Shared settings: PCs, neighbours, seeds, k values, resolutions
+├── environment.yml # Conda environment (all dependencies, pinned)
+├── config.yaml # Shared settings: PCs, neighbours, seeds, k values, resolutions
 ├── .gitignore
 │
 ├── src/
-│   ├── preprocess.py        # Load data, PCA, neighbour graph, UMAP → data/pbmc_pca.h5ad
-│   ├── run_leiden.py        # Leiden runs and resolution sweep
-│   ├── run_kmeans.py        # K-means runs and k sweep
-│   ├── run_sc3s.py          # SC3s runs and k sweep
-│   ├── evaluate.py          # ARI, NMI, silhouette, runtime → results/metrics.csv
-│   └── make_figures.py      # All final figures → figures/
+│ ├── preprocess.py # Load data, PCA, neighbour graph, UMAP → data/pbmc_pca.h5ad
+│ ├── run_leiden.py # Leiden runs and resolution sweep
+│ ├── run_kmeans.py # K-means runs and k sweep
+│ ├── run_sc3s.py # SC3s runs and k sweep
+│ ├── evaluate.py # ARI, NMI, silhouette, runtime → results/metrics.csv
+│ └── make_figures.py # All final figures → figures/
 │
-├── data/                    # Generated; not committed
-│   └── pbmc_pca.h5ad
+├── data/ # Generated; not committed
+│ └── pbmc_pca.h5ad
 │
 ├── results/
-│   ├── clusters_leiden.csv
-│   ├── clusters_kmeans.csv
-│   ├── clusters_sc3s.csv
-│   └── metrics.csv
+│ ├── clusters_leiden.csv
+│ ├── clusters_kmeans.csv
+│ ├── clusters_sc3s.csv
+│ └── metrics.csv
 │
-├── figures/                 # Final figures used in the report and slides
-├── notebooks/               # Exploration only; final results come from src/
-└── report/                  # Report drafts and final PDF
-
+├── figures/ # Final figures used in the report and slides
+├── notebooks/ # Exploration only; final results come from src/
+└── report/ # Report drafts and final PDF
 
 ### Setup
+
 Requirements: Conda and git.
 
 ```bash
@@ -77,6 +81,7 @@ conda activate scrna-clustering
 ```
 
 Main dependencies
+
 - Python 3.10+
 - scanpy, anndata
 - scikit-learn
@@ -85,8 +90,8 @@ Main dependencies
 - pandas, numpy, matplotlib, seaborn
 - pyyaml
 
-
 ### How to run
+
 Run the steps in order from the repository root. All settings are read from config.yaml
 
 ```bash
@@ -104,9 +109,11 @@ python src/evaluate.py
 # 4. Make all figures
 python src/make_figures.py
 ```
+
 Each step can also be run on its own once the previous steps output exists.
 
 ### Shared settings
+
 All members use these values. Change them only after the group agrees.
 
 ```yaml
@@ -119,31 +126,56 @@ label_column: bulk_labels
 ```
 
 ### Shared file formats
+
 Every method saves result in the same format, so one script can evaluate all of them.
 
 ** Cluster assignments **: `results/clusters_<method>.csv` one row per cell per run:
 
-| Column            | Description                         |
-| :---------------- | ----------------------------------: |
-| cell_id           | Cell barcode from adata.obs_names   |
-| Cluster           | Cluster assigned by the method      |
-| method            | Kmeans, Leiden or SC3S              |
-| parameter         | Value of k or Leiden resolution     |
-| seed              | Random seed used                    |
-
+| Column    |                       Description |
+| :-------- | --------------------------------: |
+| cell_id   | Cell barcode from adata.obs_names |
+| Cluster   |    Cluster assigned by the method |
+| method    |            Kmeans, Leiden or SC3S |
+| parameter |   Value of k or Leiden resolution |
+| seed      |                  Random seed used |
 
 ** Metrics **: `results/metrics.csv` one row per cell per run:
 
-| Column            | Description                                        |
-| :---------------- | -------------------------------------------------: |
-| method            | kmeans, leiden or sc3s                             |
-| parameter         | value of k or leiden resolution                    |
-| seed              | Random seed used                                   |
-| n_clusters        | Number of clusters found                           |
-| ARI               | Adjusted Rand Index vs reference labels            |
-| NMI               | Normalized mutual informations vs reference labels |
-| Silhouette        | Silhouette score in PCA space                      |
-| runtime           | runtime in seconds                                 |
+| Column     |                                        Description |
+| :--------- | -------------------------------------------------: |
+| method     |                             kmeans, leiden or sc3s |
+| parameter  |                    value of k or leiden resolution |
+| seed       |                                   Random seed used |
+| n_clusters |                           Number of clusters found |
+| ARI        |            Adjusted Rand Index vs reference labels |
+| NMI        | Normalized mutual informations vs reference labels |
+| Silhouette |                      Silhouette score in PCA space |
+| runtime    |                                 runtime in seconds |
 
+### Best Practices
 
+Make a branch for each task, not one per member. Start each one from the latest main and merge it back with a pull request when the task is done.
 
+```bash
+git checkout master
+git pull                          # get everyone's latest work first
+git checkout -b leiden-first-run  # new branch for this task
+# ...work, then commit often:
+git add .
+git commit -m "Run Leiden at default resolution (#6)"
+git push -u origin leiden-first-run
+```
+
+Then on GitHub:
+
+Open a pull request into master, with Closes #6 in the description.
+A teammate reviews and merges it.
+Delete the branch.
+
+Good habits:
+
+Name branches after the task: preprocess, kmeans-first-run, evaluate-script, sc3s-k-sweep.
+Pull master before starting each new branch, so your work includes your teammates’ merged changes.
+Keep branches short, a few days at most.
+Don’t edit someone else’s files on your branch unless you’ve agreed to. Each method has its own script (run_leiden.py, run_kmeans.py, run_sc3s.py), so conflicts should be rare.
+Coordinate edits to shared files like config.yaml in the group chat, since everyone reads from them.
