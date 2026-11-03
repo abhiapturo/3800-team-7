@@ -1,0 +1,19 @@
+name: 3800-team-7
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - scanpy
+  - python-igraph
+  - leidenalg
+  - scikit-learn
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - pyyaml
+  - jupyterlab
+  - ipykernel
+  - pip
+  - pip:
+      - sc3s
