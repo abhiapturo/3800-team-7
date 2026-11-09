@@ -28,6 +28,14 @@ Aim
 
 ### Methods compared
 
+| Column  | Description                                                    |         Key Parameters |
+| :------ | -------------------------------------------------------------- | ---------------------: |
+| K-means | Classical centroid-based baseline, run in PCA space            | k (number of clusters) |
+| Leiden  | Graph-based community detection on a k-nearest neighbour graph |             Resolution |
+| SC3s    | Consensus clustering designed for scRNA-seq                    | k (number of clusters) |
+
+All methods receive the same PCA representation.
+
 ### Dataset
 
 PBMC68k reduced, bundled with Scanpy:
@@ -36,6 +44,8 @@ PBMC68k reduced, bundled with Scanpy:
 import scanpy as sc
 adata = sc.datasets.pbmc68k_reduced()
 ```
+
+- 700 cells × 765 genes; already normalized and scaled (do not normalize or scale again)
 
 ### Repository Structure
 
@@ -66,35 +76,83 @@ scrna-clustering-comparison/
 ├── notebooks/ # Exploration only; final results come from src/
 └── report/ # Report drafts and final PDF
 
-### Setup
+Each member does this once on their own laptop, and once in their own account on the team VM (see Running on the team VM).
 
-Requirements: Conda and git.
+1. Install the prerequisites
+   Tool | Windows | Mac |Linux / VM
+   | :---- | --------------------------------------------- |----------------:|
+   Git | git-scm.com (includes Git Bash) |xcode-select --install | sudo apt install -y git
+   Conda | Miniforge or Anaconda Miniforge Miniforge (see VM section)
+   Editor | VS Code + Python and Jupyter extensions | same same
+
+2. Connect your shell to conda (once per machine)
+
+conda activate only works after this step. Run the line for the terminal you actually use:
+
+| Terminal                        |               Command |
+| :------------------------------ | --------------------: |
+| Git Bash (prompt shows MINGW64) |       conda init bash |
+| PowerShell                      | conda init powershell |
+| Command Prompt                  |    conda init cmd.exe |
+| Mac (zsh)                       |        conda init zsh |
+| Linux / VM (bash)               |       conda init bash |
+
+Then close and reopen the terminal. Check with conda --version.
+
+3. Set up GitHub access with SSH (once per machine)
+
+GitHub does not accept passwords for Git. Create an SSH key and add it to your account:
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/[username]/scrna-clustering-comparison.git
-cd scrna-clustering-comparison
-
-# 2. Create and activate the environment
-conda env create -f environment.yml
-conda activate scrna-clustering
+ssh-keygen -t ed25519 -C "your-email@uconn.edu"   # press Enter at each prompt
+cat ~/.ssh/id_ed25519.pub                         # copy this line
 ```
 
-Main dependencies
+Paste it into GitHub → Settings → SSH and GPG keys → New SSH key, then test:
 
-- Python 3.10+
-- scanpy, anndata
-- scikit-learn
-- leidenalg, python-igraph
-- sc3s
-- pandas, numpy, matplotlib, seaborn
-- pyyaml
+```bash
+ssh -T git@github.com    # should greet you by your GitHub username
+4. Clone the repository
+bash
+git clone git@github.com:<owner>/3800-team-7.git
+cd 3800-team-7
+```
+
+5. Create and activate the environment
+
+```bash
+conda env create -f environment.yml
+conda activate 3800-team-7
+```
+
+Your prompt should now start with (scrna-clustering). Check that everything imports:
+
+```bash
+python -c "import scanpy, sklearn, leidenalg, sc3s; print('scanpy', scanpy.__version__)"
+```
+
+6. Use the environment in VS Code
+   Scripts: Ctrl+Shift+P → Python: Select Interpreter → choose scrna-clustering.
+   Notebooks: open a .ipynb, click Select Kernel (top right) → choose scrna-clustering.
+
+7. Keep the environment up to date
+
+When someone changes environment.yml (via a merged pull request), everyone runs:
+
+```bash
+git pull
+conda env update -f environment.yml --prune
+```
+
+Rule: never pip install or conda install packages directly for project work. Add the package to environment.yml in a pull request and tell the team.
 
 ### How to run
 
 Run the steps in order from the repository root. All settings are read from config.yaml
 
 ```bash
+conda activate 3800-team-7
+
 # 1. Preprocess: load data, PCA, neighbour graph, UMAP
 python src/preprocess.py
 
@@ -110,7 +168,45 @@ python src/evaluate.py
 python src/make_figures.py
 ```
 
-Each step can also be run on its own once the previous steps output exists.
+Run step 1 first. data/ is not in Git, so after cloning, everyone generates data/pbmc_pca.h5ad locally with preprocess.py. With the same config.yaml, everyone gets the same file.
+Each later step can be run on its own once the previous step's output exists.
+The dataset is small: each step takes seconds to a few minutes on a laptop.
+Laptops are for writing and testing code. Official results (the numbers and figures in the report) are produced on the team VM.
+Running on the team VM
+
+Each member uses their own account on the VM and their own clone of the repository.
+
+One-time setup:
+
+```bash
+# Install Miniforge in your home folder
+cd ~
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh -b
+~/miniforge3/bin/conda init bash
+source ~/.bashrc
+
+# Set your Git identity, add an SSH key to GitHub (Setup step 3), then clone and create the environment
+git config --global user.name "Your Name"
+git config --global user.email "your-email@uconn.edu"
+git clone git@github.com:<owner>/3800-team-7.git
+cd 3800-team-7
+conda env create -f environment.yml
+```
+
+Each session:
+
+```bash
+tmux new -s work               # or: tmux attach -t work   (resume a session)
+cd ~/3800-team-7
+conda activate 3800-team-7
+git checkout main && git pull
+python src/preprocess.py       # if data/pbmc_pca.h5ad doesn't exist yet
+python src/run_kmeans.py       # etc.
+```
+
+tmux keeps jobs running if your connection drops (Ctrl+B then D to detach).
+Use sudo apt only for system tools; Python packages go in environment.yml.
 
 ### Shared settings
 
@@ -123,6 +219,7 @@ seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 k_values: [4, 6, 8, 10, 12, 14]
 leiden_resolutions: [0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
 label_column: bulk_labels
+data_path: data/pbmc_pca.h5ad
 ```
 
 ### Shared file formats
@@ -168,14 +265,15 @@ git push -u origin leiden-first-run
 
 Then on GitHub:
 
-Open a pull request into master, with Closes #6 in the description.
-A teammate reviews and merges it.
+Open a pull request into main, with Closes #6 in the description.
+Review and merges it.
 Delete the branch.
 
 Good habits:
 
 Name branches after the task: preprocess, kmeans-first-run, evaluate-script, sc3s-k-sweep.
-Pull master before starting each new branch, so your work includes your teammates’ merged changes.
+Pull main before starting each new branch, so your work includes your teammates’ merged changes.
 Keep branches short, a few days at most.
 Don’t edit someone else’s files on your branch unless you’ve agreed to. Each method has its own script (run_leiden.py, run_kmeans.py, run_sc3s.py), so conflicts should be rare.
-Coordinate edits to shared files like config.yaml in the group chat, since everyone reads from them.
+Coordinate edits to shared files like config.yaml and environment.yml in the group
+Run git status before every commit and make sure no data files are included.
