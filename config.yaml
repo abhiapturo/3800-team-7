@@ -4,7 +4,7 @@ label_column: bulk_labels
 
 # Preprocessing (src/preprocess.py)
 n_pcs: 30
-n_neightbors: 15
+n_neighbors: 15
 random_state: 0
 
 #clustering

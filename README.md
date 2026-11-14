@@ -79,11 +79,11 @@ scrna-clustering-comparison/
 Each member does this once on their own laptop, and once in their own account on the team VM (see Running on the team VM).
 
 1. Install the prerequisites
-   Tool | Windows | Mac |Linux / VM
-   | :---- | --------------------------------------------- |----------------:|
-   Git | git-scm.com (includes Git Bash) |xcode-select --install | sudo apt install -y git
-   Conda | Miniforge or Anaconda Miniforge Miniforge (see VM section)
-   Editor | VS Code + Python and Jupyter extensions | same same
+   | Tool   | Windows                                 | Mac                   |Linux / VM               |
+   |:-----  | --------------------------------------- |-----------------------|------------------------:|
+   |Git     | git-scm.com (includes Git Bash)         |xcode-select --install | sudo apt install -y git |
+   |Conda   | Miniforge or Anaconda                   |Miniforge              | Miniforge               |  
+   |Editor  | VS Code + Python and Jupyter extensions | same                  | same                    |
 
 2. Connect your shell to conda (once per machine)
 
@@ -201,7 +201,7 @@ tmux new -s work               # or: tmux attach -t work   (resume a session)
 cd ~/3800-team-7
 conda activate 3800-team-7
 git checkout main && git pull
-python src/preprocess.py       # if data/pbmc_pca.h5ad doesn't exist yet
+python src/preprocess.py       # Run Once (if data/pbmc_pca.h5ad doesn't exist yet)
 python src/run_kmeans.py       # etc.
 ```
 
