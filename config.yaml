@@ -1,0 +1,14 @@
+# Shared settings for all scripts.
+data_path: data/pbmc_pca.h5ad
+label_column: bulk_labels
+
+# Preprocessing (src/preprocess.py)
+n_pcs: 30
+n_neightbors: 15
+random_state: 0
+
+#clustering
+seed: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+k_values: [4, 6, 8, 10, 12, 14]
+leiden_resolutions: [0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
+kmeans_n_init: 10
