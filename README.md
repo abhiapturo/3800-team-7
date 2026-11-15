@@ -49,6 +49,7 @@ adata = sc.datasets.pbmc68k_reduced()
 
 ### Repository Structure
 
+```text
 scrna-clustering-comparison/
 ├── README.md
 ├── environment.yml # Conda environment (all dependencies, pinned)
@@ -75,6 +76,7 @@ scrna-clustering-comparison/
 ├── figures/ # Final figures used in the report and slides
 ├── notebooks/ # Exploration only; final results come from src/
 └── report/ # Report drafts and final PDF
+```
 
 Each member does this once on their own laptop, and once in their own account on the team VM (see Running on the team VM).
 
