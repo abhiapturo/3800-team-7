@@ -1,2 +1,3 @@
-method,resolution,seed,runtime_seconds,n_clusters
-leiden,1.0,0,0.22308170003816485,12
+run_id,method,resolution,seed,runtime_seconds,n_clusters
+lr[0.75]seed[0],leiden,0.75,0,0.027345500187948346,10
+lr[1.0]seed[0],leiden,1.0,0,0.031687800073996186,12
