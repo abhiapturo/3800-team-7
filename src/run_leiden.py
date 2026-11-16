@@ -10,18 +10,20 @@ import yaml
 # Project root variable
 ROOT = Path(__file__).resolve().parent.parent
 
-# Loads shared configuration from ROOT
 with open(ROOT / "config.yaml", "r") as file:
+    """Load shared experimental settings"""
     config = yaml.safe_load(file)
 
 # Loads preprocessed dataset from ROOT
 adata = sc.read_h5ad(ROOT / config["data_path"])
 
-# Verify PCA representation
+
 if "X_pca" not in adata.obsm:
+    """Check if PCA features exist"""
     raise ValueError("PCA representation is missing")
 
 if adata.obsm["X_pca"].shape[1] < config["n_pcs"]:
+    """Need atleast 30 PCA components, checks for that amount"""
     raise ValueError("Not enough PCA components")
 
 # Verify shared neighbor graph

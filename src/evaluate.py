@@ -16,8 +16,8 @@ import scanpy as sc
 import yaml
 
 from sklearn.metrics import (
-    adjusted_rand_score,
-    normalized_mutual_info_score,
+    adjusted_rand_score, # ARI
+    normalized_mutual_info_score, # NMI
     silhouette_score,
 )
 
@@ -27,19 +27,22 @@ RESULTS_DIR = ROOT / "results"
 
 
 def load_config():
-    """Load shared experimental settings."""
+    """Load shared experimental settings"""
     with open(CONFIG_PATH, "r") as file:
         return yaml.safe_load(file)
 
 
 def load_dataset(config):
-    """Load PCA features and reference cell labels."""
+    """Load PCA features and reference cell labels"""
 
     data_path = ROOT / config["data_path"]
+
+    # Store single cell measurements
     adata = sc.read_h5ad(data_path)
 
     label_column = config["label_column"]
 
+    # Expecting bulk_labels, if column is missing return error
     if label_column not in adata.obs.columns:
         raise ValueError(
             f"Missing reference column: {label_column}"
@@ -77,7 +80,7 @@ def evaluate_clustering(
     parameter=None,
     parameter_value=None,
 ):
-    """Evaluate one clustering run."""
+    """For one clustering run"""
 
     X = np.asarray(X)
     true_labels = np.asarray(true_labels)
@@ -86,6 +89,8 @@ def evaluate_clustering(
     if X.ndim != 2:
         raise ValueError("X must be a 2D matrix")
 
+    #The number of elements in true_labels MUST be the same as
+    #the number of elements in pred_labels, otherwise this is invalid
     if (
         len(X) != len(true_labels)
         or len(X) != len(pred_labels)
@@ -136,7 +141,7 @@ def evaluate_clustering(
 
 def evaluate_file(csv_path, cell_ids, X, true_labels):
     """
-    Evaluate a CSV containing clustering assignments.
+    Evaluate a CSV containing clustering assignments
 
     Required columns:
         cell_id, cluster
@@ -145,7 +150,7 @@ def evaluate_file(csv_path, cell_ids, X, true_labels):
         method, seed, parameter,
         parameter_value, runtime_seconds
 
-    Multiple runs can be stored in one CSV.
+    Multiple runs can be stored in one CSV
     """
 
     df = pd.read_csv(csv_path, dtype={"cell_id": str})
