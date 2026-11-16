@@ -74,10 +74,10 @@ for k in config["k_values"]:
         )
 
         timings.append({
-            "method": "sc3s",
+            "method": "SC3s",
             "parameter": k,
             "seed": seed,
-            "runtime_s": round(runtime, 4)
+            "runtime_seconds": round(runtime, 4)
         })
 
     print(f"k={k}: {len(config['seeds'])} seeds done")
