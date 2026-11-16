@@ -60,18 +60,33 @@ print(f"Seed: {seed}")
 print(f"Clusters found: {n_clusters}")
 print(f"Runtime: {runtime:.4f} seconds")
 
-# Save results
+# Save CLUSTERING results
 output_dir = ROOT / "results"
 output_dir.mkdir(exist_ok=True)
 
-results = pd.DataFrame({
+cluster_results = pd.DataFrame({
     "cell_id": adata.obs_names,
     "cluster": labels
 })
 
-results.to_csv(
+cluster_results.to_csv(
     output_dir / "clusters_leiden.csv",
     index=False
 )
 
 print("Saved results/clusters_leiden.csv")
+
+# Save RUNTIME results
+runtime_results = pd.DataFrame({
+    "method": ["leiden"],
+    "resolution": [resolution],
+    "seed": [seed],
+    "runtime_seconds": [runtime],
+    "n_clusters": [n_clusters]
+})
+
+runtime_file = output_dir / "runtime_leiden.csv"
+
+runtime_results.to_csv(runtime_file, index=False)
+
+print("Saved results/runtime_leiden.csv")
