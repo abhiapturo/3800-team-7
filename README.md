@@ -50,7 +50,7 @@ adata = sc.datasets.pbmc68k_reduced()
 ### Repository Structure
 
 ```text
-scrna-clustering-comparison/
+3800-team-7 (scrna-clustering-comparison)/
 ├── README.md
 ├── environment.yml # Conda environment (all dependencies, pinned)
 ├── config.yaml # Shared settings: PCs, neighbours, seeds, k values, resolutions
@@ -81,11 +81,11 @@ scrna-clustering-comparison/
 Each member does this once on their own laptop, and once in their own account on the team VM (see Running on the team VM).
 
 1. Install the prerequisites
-   | Tool   | Windows                                 | Mac                   |Linux / VM               |
-   |:-----  | --------------------------------------- |-----------------------|------------------------:|
-   |Git     | git-scm.com (includes Git Bash)         |xcode-select --install | sudo apt install -y git |
-   |Conda   | Miniforge or Anaconda                   |Miniforge              | Miniforge               |  
-   |Editor  | VS Code + Python and Jupyter extensions | same                  | same                    |
+   | Tool | Windows | Mac |Linux / VM |
+   |:----- | --------------------------------------- |-----------------------|------------------------:|
+   |Git | git-scm.com (includes Git Bash) |xcode-select --install | sudo apt install -y git |
+   |Conda | Miniforge or Anaconda |Miniforge | Miniforge |  
+   |Editor | VS Code + Python and Jupyter extensions | same | same |
 
 2. Connect your shell to conda (once per machine)
 
@@ -114,8 +114,11 @@ Paste it into GitHub → Settings → SSH and GPG keys → New SSH key, then tes
 
 ```bash
 ssh -T git@github.com    # should greet you by your GitHub username
+```
+
 4. Clone the repository
-bash
+
+```bash
 git clone git@github.com:<owner>/3800-team-7.git
 cd 3800-team-7
 ```
@@ -256,7 +259,7 @@ Every method saves result in the same format, so one script can evaluate all of 
 Make a branch for each task, not one per member. Start each one from the latest main and merge it back with a pull request when the task is done.
 
 ```bash
-git checkout master
+git checkout main
 git pull                          # get everyone's latest work first
 git checkout -b leiden-first-run  # new branch for this task
 # ...work, then commit often:
