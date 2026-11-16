@@ -1,0 +1,13 @@
+# Tested with Python 3.12, numpy 2.5, scanpy 1.11, scikit-learn 1.9, sc3s 0.1.1
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+scanpy>=1.10
+anndata
+igraph           # fast Leiden implementation used by Scanpy
+leidenalg
+# SC3s is installed separately WITHOUT its dependencies, because its package
+# metadata pins numpy<2 although it runs fine with numpy 2:
+#     python -m pip install --no-deps sc3s
