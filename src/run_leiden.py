@@ -110,9 +110,10 @@ for resolution in resolutions:
     all_runtime_results.append({
         "run_id": run_id,
         "method": "leiden",
-        "resolution": resolution,
+        "parameter":"resolution",
+        "parameter_value": resolution,
         "seed": seed,
-        "runtime_seconds": runtime,
+        "runtime_seconds": round(runtime,4),
         "n_clusters": n_clusters
     })
 

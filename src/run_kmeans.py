@@ -40,14 +40,16 @@ for k in config["k_values"]:
                 "cell_id": adata.obs_names,
                 "cluster": labels,
                 "method" : "Kmeans",
-                "parameter": k,
                 "seed": seed,
+                "parameter": "K",
+                "parameter_value": k,
             })
         )
 
         timings.append({
             "method":"Kmeans",
-            "parameter":k,
+            "parameter":"K",
+            "parameter_value":k,
             "seed": seed,
             "runtime_seconds": round(runtime, 4)
         })

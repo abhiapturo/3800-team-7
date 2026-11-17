@@ -233,26 +233,29 @@ Every method saves result in the same format, so one script can evaluate all of 
 
 ** Cluster assignments **: `results/clusters_<method>.csv` one row per cell per run:
 
-| Column    |                       Description |
-| :-------- | --------------------------------: |
-| cell_id   | Cell barcode from adata.obs_names |
-| Cluster   |    Cluster assigned by the method |
-| method    |            Kmeans, Leiden or SC3S |
-| parameter |   Value of k or Leiden resolution |
-| seed      |                  Random seed used |
+| Column          |                       Description |
+| :-------------- | --------------------------------: |
+| cell_id         | Cell barcode from adata.obs_names |
+| Cluster         |    Cluster assigned by the method |
+| method          |            Kmeans, Leiden or SC3S |
+| seed            |                  Random seed used |
+| parameter       |            k or Leiden resolution |
+| parameter_value |   Value of k or Leiden resolution |
+
 
 ** Metrics **: `results/metrics.csv` one row per cell per run:
 
-| Column     |                                        Description |
-| :--------- | -------------------------------------------------: |
-| method     |                             kmeans, leiden or sc3s |
-| parameter  |                    value of k or leiden resolution |
-| seed       |                                   Random seed used |
-| n_clusters |                           Number of clusters found |
-| ARI        |            Adjusted Rand Index vs reference labels |
-| NMI        | Normalized mutual informations vs reference labels |
-| Silhouette |                      Silhouette score in PCA space |
-| runtime    |                                 runtime in seconds |
+| Column          |                                        Description |
+| :-------------- | -------------------------------------------------: |
+| method          |                             kmeans, leiden or sc3s |
+| seed            |                                   Random seed used |
+| parameter       |                             k or leiden resolution |
+| parameter_value |                    value of k or leiden resolution |
+| n_clusters      |                           Number of clusters found |
+| ARI             |            Adjusted Rand Index vs reference labels |
+| NMI             | Normalized mutual informations vs reference labels |
+| Silhouette      |                      Silhouette score in PCA space |
+| runtime         |                                 runtime in seconds |
 
 ### Best Practices
 
