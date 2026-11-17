@@ -122,7 +122,7 @@ runtime_results = pd.DataFrame(all_runtime_results)
 
 
 baseline = runtime_results.loc[
-    np.isclose(runtime_results["resolution"], 1.0)
+    np.isclose(runtime_results["parameter_value"], 1.0)
 ].iloc[0]
 
 # Matched closest cluster count to reference_k
@@ -205,7 +205,7 @@ for run in [baseline, matched]:
     sc.pl.umap(
         adata,
         color="plot_cluster",
-        title=f"Leiden resolution {run['resolution']}",
+        title=f"Leiden resolution {run['parameter_value']}",
         show=False
     )
 
